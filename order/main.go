@@ -26,9 +26,12 @@ func main() {
 		log.Fatalf("failed to open db: %v", err)
 	}
 	handler := pkg.NewHandler(pkg.NewRepository(db))
+
+	go handler.OnMessage()
 	http.HandleFunc("/order/create", handler.Insert)
 	http.HandleFunc("/order/get", handler.Get)
 	http.HandleFunc("/order/update", handler.Update)
+	http.HandleFunc("/order/write", handler.Write)
 
 	log.Println("server started at :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

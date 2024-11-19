@@ -11,10 +11,10 @@ import (
 
 var (
 	host     = "localhost"
-	port     = 5432
+	port     = 5434
 	user     = "root"
 	password = "root"
-	dbname   = "order"
+	dbname   = "inventory"
 	driver   = "postgres"
 	sslMode  = "disable"
 )
@@ -26,10 +26,10 @@ func main() {
 		log.Fatalf("failed to open db: %v", err)
 	}
 	handler := pkg.NewHandler(pkg.NewRepository(db))
-	http.HandleFunc("/order/create", handler.Insert)
-	http.HandleFunc("/order/get", handler.Get)
-	http.HandleFunc("/order/update", handler.Update)
 
-	log.Println("server started at :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	go handler.OnMessageFromOrderService()
+	http.HandleFunc("/inventory/create", handler.Insert)
+
+	log.Println("server started at :8084")
+	log.Fatal(http.ListenAndServe(":8084", nil))
 }

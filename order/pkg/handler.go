@@ -20,6 +20,11 @@ func (h *Handler) Insert(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	err = ProduceMessage("localhost:29092", "inventory", "ORDER CREATED")
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	res.WriteHeader(http.StatusCreated)
 	res.Write([]byte(`{"message": "success"}`))
 }
@@ -50,4 +55,26 @@ func (h *Handler) Update(res http.ResponseWriter, req *http.Request) {
 	}
 	res.WriteHeader(http.StatusOK)
 	res.Write([]byte(`{"message": "success"}`))
+}
+
+func (h *Handler) Write(res http.ResponseWriter, req *http.Request) {
+	order := &Order{}
+	if err := json.NewDecoder(req.Body).Decode(order); err != nil {
+		http.Error(res, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err := ProduceMessage("localhost:29092", "test", order.Status)
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	res.WriteHeader(http.StatusCreated)
+	res.Write([]byte(`{"message": "success"}`))
+}
+
+func (h *Handler) OnMessage() {
+	err := ConsumeMessages("localhost:29092", "order", "group1")
+	if err != nil {
+		http.Error(nil, err.Error(), http.StatusInternalServerError)
+	}
 }

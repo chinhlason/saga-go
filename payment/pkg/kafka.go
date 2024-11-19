@@ -8,9 +8,11 @@ import (
 
 func ProduceMessage(broker, topic, message string) error {
 	writer := kafka.Writer{
-		Addr:     kafka.TCP(broker),
-		Topic:    topic,
-		Balancer: &kafka.LeastBytes{},
+		Addr:         kafka.TCP(broker),
+		Topic:        topic,
+		Balancer:     &kafka.LeastBytes{},
+		RequiredAcks: kafka.RequireAll,
+		MaxAttempts:  3,
 	}
 
 	defer writer.Close()

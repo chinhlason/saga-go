@@ -25,11 +25,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to open db: %v", err)
 	}
+
 	handler := pkg.NewHandler(pkg.NewRepository(db))
+
 	http.HandleFunc("/payment/create", handler.Insert)
 	http.HandleFunc("/payment/get", handler.Get)
 	http.HandleFunc("/payment/update", handler.Update)
 
-	log.Println("server started at :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("server started at :8081")
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }

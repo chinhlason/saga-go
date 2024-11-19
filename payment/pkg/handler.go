@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -50,4 +51,11 @@ func (h *Handler) Update(res http.ResponseWriter, req *http.Request) {
 	}
 	res.WriteHeader(http.StatusOK)
 	res.Write([]byte(`{"message": "success"}`))
+}
+
+func (h *Handler) OnMessage() {
+	err := ConsumeMessages("localhost:29092", "test", "group1")
+	if err != nil {
+		log.Fatalf("failed to consume message: %v", err)
+	}
 }

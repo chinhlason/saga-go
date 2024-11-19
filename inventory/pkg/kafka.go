@@ -16,7 +16,7 @@ func ProduceMessage(broker, topic, message string) error {
 	defer writer.Close()
 
 	err := writer.WriteMessages(context.Background(), kafka.Message{
-		Key:   []byte("key"),
+		Key:   []byte("inventory"),
 		Value: []byte(message),
 	})
 	if err != nil {
