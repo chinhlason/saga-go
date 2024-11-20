@@ -2,16 +2,18 @@ package pkg
 
 import (
 	"encoding/json"
+	"github.com/segmentio/kafka-go"
 	"net/http"
 	"strconv"
 )
 
 type Handler struct {
 	r IRepository
+	w *kafka.Writer
 }
 
-func NewHandler(r IRepository) *Handler {
-	return &Handler{r: r}
+func NewHandler(r IRepository, w *kafka.Writer) *Handler {
+	return &Handler{r: r, w: w}
 }
 
 func (h *Handler) Insert(res http.ResponseWriter, req *http.Request) {
@@ -20,7 +22,7 @@ func (h *Handler) Insert(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = ProduceMessage("localhost:29092", "inventory", "ORDER CREATED")
+	err = ProduceMessage(h.w, "ORDER CREATED")
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
@@ -63,7 +65,7 @@ func (h *Handler) Write(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err := ProduceMessage("localhost:29092", "test", order.Status)
+	err := ProduceMessage(h.w, order.Status)
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return

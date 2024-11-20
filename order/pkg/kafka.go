@@ -7,16 +7,19 @@ import (
 	"time"
 )
 
-func ProduceMessage(broker, topic, message string) error {
-	start := time.Now()
-	writer := kafka.Writer{
-		Addr:     kafka.TCP(broker),
-		Topic:    topic,
-		Balancer: &kafka.LeastBytes{},
-	}
+func InitProducer(broker, topic string) (*kafka.Writer, error) {
+	return &kafka.Writer{
+		Addr:         kafka.TCP(broker),
+		Topic:        topic,
+		Balancer:     &kafka.LeastBytes{},
+		BatchSize:    100,
+		RequiredAcks: kafka.RequireOne,
+	}, nil
+}
 
+func ProduceMessage(writer *kafka.Writer, message string) error {
+	start := time.Now()
 	defer func() {
-		_ = writer.Close()
 		fmt.Printf("time taken to produce message: %v\n", time.Since(start))
 	}()
 

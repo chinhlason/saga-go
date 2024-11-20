@@ -18,10 +18,13 @@ g-down:
 	goose -dir ./delivery/migrations postgres $(DSN4) down
 
 create:
-	docker exec -it $(HOST) kafka-topics --create --bootstrap-server localhost:29092 --replication-factor 1 --partitions 1 --topic $(TOPIC)
+	docker exec -it $(HOST) kafka-topics --create --bootstrap-server localhost:29092 --replication-factor 1 --partitions 1 --topic order
+	docker exec -it $(HOST) kafka-topics --create --bootstrap-server localhost:29092 --replication-factor 1 --partitions 1 --topic payment
+	docker exec -it $(HOST) kafka-topics --create --bootstrap-server localhost:29092 --replication-factor 1 --partitions 1 --topic inventory
+	docker exec -it $(HOST) kafka-topics --create --bootstrap-server localhost:29092 --replication-factor 1 --partitions 1 --topic delivery
 
 list:
-	docker exec $(HOST) kafka-topics --describe --topic $(TOPIC) --bootstrap-server localhost:29092
+	docker exec $(HOST) kafka-topics --list --bootstrap-server localhost:29092
 
 produce:
 	 docker exec -it $(HOST) kafka-console-producer --bootstrap-server localhost:29092 --topic $(TOPIC) --request-required-acks 1

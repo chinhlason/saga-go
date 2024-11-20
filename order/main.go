@@ -25,7 +25,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to open db: %v", err)
 	}
-	handler := pkg.NewHandler(pkg.NewRepository(db))
+
+	w, err := pkg.InitProducer("localhost:29092", "inventory")
+	if err != nil {
+		log.Fatalf("failed to init producer: %v", err)
+	}
+	defer w.Close()
+
+	handler := pkg.NewHandler(pkg.NewRepository(db), w)
 
 	go handler.OnMessage()
 	http.HandleFunc("/order/create", handler.Insert)
