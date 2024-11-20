@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	host     = "localhost"
+	host     = "inventory"
 	port     = 5434
 	user     = "root"
 	password = "root"

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	host     = "localhost"
+	host     = "order"
 	port     = 5432
 	user     = "root"
 	password = "root"
@@ -26,7 +26,7 @@ func main() {
 		log.Fatalf("failed to open db: %v", err)
 	}
 
-	w, err := pkg.InitProducer("localhost:29092", "inventory")
+	w, err := pkg.InitProducer("kafka:9092", "inventory")
 	if err != nil {
 		log.Fatalf("failed to init producer: %v", err)
 	}

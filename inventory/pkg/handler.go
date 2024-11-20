@@ -23,7 +23,7 @@ func (h *Handler) Insert(res http.ResponseWriter, req *http.Request) {
 
 func (h *Handler) OnMessageFromOrderService() {
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{"localhost:29092"},
+		Brokers: []string{"kafka:9092"},
 		Topic:   "inventory",
 		GroupID: "group1",
 	})
@@ -37,12 +37,12 @@ func (h *Handler) OnMessageFromOrderService() {
 		if string(msg.Value) == "ORDER CREATED" {
 			number, err := h.r.Get(context.Background())
 			if err != nil || number == 0 {
-				err = ProduceMessage("localhost:29092", "order", "RUN OUT")
+				err = ProduceMessage("kafka:9092", "order", "RUN OUT")
 				if err != nil {
 					log.Fatalf("failed to produce message: %v", err)
 				}
 			} else {
-				err = ProduceMessage("localhost:29092", "order", "AVAILABLE")
+				err = ProduceMessage("kafka:9092", "order", "AVAILABLE")
 				if err != nil {
 					log.Fatalf("failed to produce message: %v", err)
 				}

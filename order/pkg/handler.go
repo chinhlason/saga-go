@@ -75,7 +75,7 @@ func (h *Handler) Write(res http.ResponseWriter, req *http.Request) {
 }
 
 func (h *Handler) OnMessage() {
-	err := ConsumeMessages("localhost:29092", "order", "group1")
+	err := ConsumeMessages("kafka:9092", "order", "group1")
 	if err != nil {
 		http.Error(nil, err.Error(), http.StatusInternalServerError)
 	}
